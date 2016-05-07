@@ -10,11 +10,14 @@ var hosts = {}
 var clients = {}
 
 io.on('connection', function(socket) {
+  console.log('Connecting new socket...')
+
   var meshNodeId = null
 
   socket.on('listen', function(id){
     meshNodeId = id
     hosts[meshNodeId] = socket
+    console.log('Connectin node %s', meshNodeId)
   })
 
   socket.on('offer', function(offer){
@@ -23,6 +26,7 @@ io.on('connection', function(socket) {
       meshNodeId = offer.source
       clients[offer.source] = socket
       host.emit(offer)
+      console.log('Offer to %s: %o', offer.destination, offer)
     } else {
       console.log('MeshNodeId %s not an active host', offer.destination)
     }
@@ -32,6 +36,7 @@ io.on('connection', function(socket) {
     if (answer.destination in clients) {
       var client = clients[answer.destination]
       client.emit(answer)
+      console.log('Answer to %s: %o', answer.destination, answer)
     } else {
       console.log('MeshNodeId %s not an active client', answer.destination)
     }
