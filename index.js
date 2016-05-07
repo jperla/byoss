@@ -17,7 +17,7 @@ io.on('connection', function(socket) {
   socket.on('listen', function(id){
     meshNodeId = id
     hosts[meshNodeId] = socket
-    console.log('Connectin node %s', meshNodeId)
+    console.log('Connecting node %s', meshNodeId)
   })
 
   socket.on('offer', function(offer){
@@ -25,7 +25,7 @@ io.on('connection', function(socket) {
       var host = hosts[offer.destination]
       meshNodeId = offer.source
       clients[offer.source] = socket
-      host.emit(offer)
+      host.emit('offer', offer)
       console.log('Offer to %s: %o', offer.destination, offer)
     } else {
       console.log('MeshNodeId %s not an active host', offer.destination)
@@ -35,7 +35,7 @@ io.on('connection', function(socket) {
   socket.on('answer', function(answer){
     if (answer.destination in clients) {
       var client = clients[answer.destination]
-      client.emit(answer)
+      client.emit('answer', answer)
       console.log('Answer to %s: %o', answer.destination, answer)
     } else {
       console.log('MeshNodeId %s not an active client', answer.destination)
@@ -49,6 +49,8 @@ io.on('connection', function(socket) {
     console.log('Active hosts: %o', Object.keys(hosts))
     console.log('Active clients: %o', Object.keys(clients))
   })
+  console.log('Active hosts: %o', Object.keys(hosts))
+  console.log('Active clients: %o', Object.keys(clients))
 })
 
 var port = process.env.PORT || 3000
