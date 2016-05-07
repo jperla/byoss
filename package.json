@@ -2,6 +2,7 @@
   "name": "BYOSS",
   "version": "0.0.1",
   "description": "Bring your own signaling server",
+  "start": "index.js",
   "dependencies": {
     "express": "~4.10.2"
   }
