@@ -6,7 +6,7 @@ app.get('/', function(req, res) {
   res.send('<h1>Hello world</h1>')
 })
 
-var hosts = {}
+var anchors = {}
 var clients = {}
 
 io.on('connection', function(socket) {
@@ -16,19 +16,19 @@ io.on('connection', function(socket) {
 
   socket.on('listen', function(id){
     meshNodeId = id
-    hosts[meshNodeId] = socket
+    anchors[meshNodeId] = socket
     console.log('Connecting node %s', meshNodeId)
   })
 
   socket.on('offer', function(offer){
-    if (offer.destination in hosts) {
-      var host = hosts[offer.destination]
+    if (offer.destination in anchors) {
+      var anchor = anchors[offer.destination]
       meshNodeId = offer.source
       clients[offer.source] = socket
-      host.emit('offer', offer)
+      anchor.emit('offer', offer)
       console.log('Offer to %s: %o', offer.destination, offer)
     } else {
-      console.log('MeshNodeId %s not an active host', offer.destination)
+      console.log('MeshNodeId %s not an active anchor', offer.destination)
     }
   })
 
@@ -44,12 +44,12 @@ io.on('connection', function(socket) {
 
   socket.on('disconnect', function(){
     if (meshNodeId) {
-      delete hosts[meshNodeId]
+      delete anchors[meshNodeId]
     }
-    console.log('Active hosts: %o', Object.keys(hosts))
+    console.log('Active anchors: %o', Object.keys(anchors))
     console.log('Active clients: %o', Object.keys(clients))
   })
-  console.log('Active hosts: %o', Object.keys(hosts))
+  console.log('Active anchors: %o', Object.keys(anchors))
   console.log('Active clients: %o', Object.keys(clients))
 })
 
