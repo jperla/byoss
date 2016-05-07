@@ -38,7 +38,7 @@ io.on('connection', function(socket) {
   })
 
   socket.on('disconnect', function(){
-    if (meshNodeID) {
+    if (meshNodeId) {
       delete hosts[meshNodeId]
     }
     console.log('Active hosts: %o', hosts)
